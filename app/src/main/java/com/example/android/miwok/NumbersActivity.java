@@ -17,12 +17,35 @@ package com.example.android.miwok;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 public class NumbersActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_numbers);
+        setContentView(R.layout.word_list);
+
+        ArrayList<Word> words = new ArrayList<Word>();
+        words.add(new Word("jeden", "one"));
+        words.add(new Word("dwa", "two"));
+        words.add(new Word("trzy", "three"));
+        words.add(new Word("cztery", "four"));
+        words.add(new Word("pięć", "five"));
+        words.add(new Word("sześć", "six"));
+        words.add(new Word("siedem", "seven"));
+        words.add(new Word("osiem", "eight"));
+        words.add(new Word("dziewięć", "nine"));
+        words.add(new Word("dziesięć", "ten"));
+
+
+
+        WordAdapter itemsAdapter = new WordAdapter(this, words);
+
+        ListView listView = (ListView) findViewById(R.id.list);
+
+        listView.setAdapter(itemsAdapter);
     }
 }
