@@ -1,33 +1,29 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.example.android.miwok;
 
 import android.content.Context;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.support.v7.app.AppCompatActivity;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.media.AudioManager;
 
 import java.util.ArrayList;
 
-public class NumbersActivity extends AppCompatActivity {
 
+/**
+ * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * {@link ColorsFragment.OnFragmentInteractionListener} interface
+ * to handle interaction events.
+ * Use the {@link ColorsFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class ColorsFragment extends Fragment {
     private MediaPlayer mMediaPlayer;
 
     private AudioManager mAudioManager;
@@ -47,29 +43,30 @@ public class NumbersActivity extends AppCompatActivity {
         }
     };
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.word_list);
+    public ColorsFragment() {
+        // Required empty public constructor
+    }
 
-        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        View rootView = inflater.inflate(R.layout.word_list, container, false);
+
+        mAudioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
 
         final ArrayList<Word> words = new ArrayList<Word>();
-        words.add(new Word("jeden", "one", R.drawable.number_one, R.raw.jeden));
-        words.add(new Word("dwa", "two", R.drawable.number_two, R.raw.dwa));
-        words.add(new Word("trzy", "three", R.drawable.number_three, R.raw.trzy));
-        words.add(new Word("cztery", "four", R.drawable.number_four, R.raw.cztery));
-        words.add(new Word("pięć", "five", R.drawable.number_five, R.raw.piec));
-        words.add(new Word("sześć", "six", R.drawable.number_six, R.raw.szesc));
-        words.add(new Word("siedem", "seven", R.drawable.number_seven, R.raw.siedem));
-        words.add(new Word("osiem", "eight", R.drawable.number_eight, R.raw.osiem));
-        words.add(new Word("dziewięć", "nine", R.drawable.number_nine, R.raw.dziewiec));
-        words.add(new Word("dziesięć", "ten", R.drawable.number_ten, R.raw.dziesiec));
+        words.add(new Word("czerwony", "red", R.drawable.color_red, R.raw.czerwony));
+        words.add(new Word("zielony", "green", R.drawable.color_green, R.raw.zielony));
+        words.add(new Word("brązowy", "brown", R.drawable.color_brown, R.raw.brazowy));
+        words.add(new Word("szary", "gray", R.drawable.color_gray, R.raw.szary));
+        words.add(new Word("czarny", "black", R.drawable.color_black, R.raw.czarny));
+        words.add(new Word("biały", "white", R.drawable.color_white, R.raw.bialy));
+        words.add(new Word("żółty", "yellow", R.drawable.color_mustard_yellow, R.raw.zolty));
 
+        WordAdapter itemsAdapter = new WordAdapter(getActivity(), words, R.color.category_colors);
 
-        WordAdapter itemsAdapter = new WordAdapter(this, words, R.color.category_numbers);
-
-        ListView listView = (ListView) findViewById(R.id.list);
+        ListView listView = (ListView)rootView.findViewById(R.id.list);
 
         listView.setAdapter(itemsAdapter);
 
@@ -83,7 +80,7 @@ public class NumbersActivity extends AppCompatActivity {
                         AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
                 if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
                     // We have audio focus now.
-                    mMediaPlayer = MediaPlayer.create(NumbersActivity.this, word.getAudioResourceId());
+                    mMediaPlayer = MediaPlayer.create(getActivity(), word.getAudioResourceId());
                     mMediaPlayer.start();
                     mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                         @Override
@@ -94,10 +91,12 @@ public class NumbersActivity extends AppCompatActivity {
                 }
             }
         });
+
+        return rootView;
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
         this.releaseMediaPlayer();
     }

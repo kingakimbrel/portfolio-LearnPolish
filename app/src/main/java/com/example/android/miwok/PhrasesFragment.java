@@ -1,32 +1,24 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.example.android.miwok;
+
 
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class ColorsActivity extends AppCompatActivity {
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class PhrasesFragment extends Fragment {
 
     private MediaPlayer mMediaPlayer;
 
@@ -47,25 +39,32 @@ public class ColorsActivity extends AppCompatActivity {
         }
     };
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.word_list);
+    public PhrasesFragment() {
+        // Required empty public constructor
+    }
 
-        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.word_list, container, false);
+
+        mAudioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
 
         final ArrayList<Word> words = new ArrayList<Word>();
-        words.add(new Word("czerwony", "red", R.drawable.color_red, R.raw.czerwony));
-        words.add(new Word("zielony", "green", R.drawable.color_green, R.raw.zielony));
-        words.add(new Word("brązowy", "brown", R.drawable.color_brown, R.raw.brazowy));
-        words.add(new Word("szary", "gray", R.drawable.color_gray, R.raw.szary));
-        words.add(new Word("czarny", "black", R.drawable.color_black, R.raw.czarny));
-        words.add(new Word("biały", "white", R.drawable.color_white, R.raw.bialy));
-        words.add(new Word("żółty", "yellow", R.drawable.color_mustard_yellow, R.raw.zolty));
+        words.add(new Word("Jak się masz?", "How are you?", R.raw.jaksiemasz));
+        words.add(new Word("Jak się nazywasz?", "What is your name?", R.raw.jaksienazywasz));
+        words.add(new Word("Co lubisz robić?", "What do you like doing?", R.raw.colubiszrobic));
+        words.add(new Word("Dzień dobry!", "Good morning!", R.raw.dziendobry));
+        words.add(new Word("Ile masz lat?", "How old are you?", R.raw.ilemaszlat));
+        words.add(new Word("Nie mówię po polsku.", "I don’t speak Polish.", R.raw.niemowiepopolsku));
+        words.add(new Word("Miło mi cię poznać.", "Nice to meet you!", R.raw.milomiciepoznac));
+        words.add(new Word("Dziękuję.", "Thank you.", R.raw.dziekuje));
+        words.add(new Word("Proszę.", "Please.", R.raw.prosze));
 
-        WordAdapter itemsAdapter = new WordAdapter(this, words, R.color.category_colors);
+        WordAdapter itemsAdapter = new WordAdapter(getActivity(), words, R.color.category_phrases);
 
-        ListView listView = (ListView) findViewById(R.id.list);
+        ListView listView = (ListView)rootView.findViewById(R.id.list);
 
         listView.setAdapter(itemsAdapter);
 
@@ -79,7 +78,7 @@ public class ColorsActivity extends AppCompatActivity {
                         AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
                 if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
                     // We have audio focus now.
-                    mMediaPlayer = MediaPlayer.create(ColorsActivity.this, word.getAudioResourceId());
+                    mMediaPlayer = MediaPlayer.create(getActivity(), word.getAudioResourceId());
                     mMediaPlayer.start();
                     mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                         @Override
@@ -90,10 +89,11 @@ public class ColorsActivity extends AppCompatActivity {
                 }
             }
         });
-    }
 
+        return rootView;
+    }
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
         this.releaseMediaPlayer();
     }
